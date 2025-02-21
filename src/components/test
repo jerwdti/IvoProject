@@ -1,0 +1,44 @@
+import React from 'react';
+
+const NodeRenderer = ({ node }) => {
+  if (!node) {
+    console.log('NodeRenderer: Node is undefined.');
+    return null;
+  }
+
+  console.log('NodeRenderer node:', node);
+
+  if (typeof node.text === "string") {
+    let style = {};
+    if (node.bold) style.fontWeight = "bold";
+    if (node.underline) style.textDecoration = "underline";
+    if (node.color) style.backgroundColor = node.color;
+
+    return <span style={style}>{node.text}</span>;
+  }
+
+  const renderChildren = () => node.children?.map((child, index) => <NodeRenderer key={index} node={child} />);
+
+  switch (node.type) {
+    case "h1":
+      return <h1>{renderChildren()}</h1>;
+    case "h4":
+      return <h4>{renderChildren()}</h4>;
+    case "p":
+      return <p>{renderChildren()}</p>;
+    case "ul":
+      return <ul>{renderChildren()}</ul>;
+    case "li":
+      return <li>{renderChildren()}</li>;
+    case "lic":
+      return <>{renderChildren()}</>;
+    case "mention":
+      return <span style={{ backgroundColor: node.color }}>{renderChildren()}</span>;
+    case "block":
+    case "clause":
+      return <div>{renderChildren()}</div>;
+    default:
+      return null;
+  }
+};
+export default NodeRenderer;
